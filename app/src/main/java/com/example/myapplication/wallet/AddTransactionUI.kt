@@ -41,6 +41,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import java.time.Instant
 import java.time.ZoneId
 
@@ -49,7 +50,7 @@ import java.time.ZoneId
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddTransactionUI(viewModel: AddTransactionViewModel = hiltViewModel()) {
+fun AddTransactionUI(navController: NavController, viewModel: AddTransactionViewModel = hiltViewModel()) {
     var name by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
@@ -177,6 +178,7 @@ fun AddTransactionUI(viewModel: AddTransactionViewModel = hiltViewModel()) {
             onClick = {
                 Toast.makeText(context, "Guardado", Toast.LENGTH_SHORT).show()
                 viewModel.saveTransaction(name, price, description, date, selectedType)
+                navController.popBackStack()
                 //Log.d("DEBUG", "Datos recibidos: name=$name, price=$price, description=$description, date=$date, type=$selectedType")
             },
             modifier = Modifier

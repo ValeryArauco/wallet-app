@@ -6,7 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.wallet.AddTransactionUI
 import com.example.myapplication.wallet.AddTransactionViewModel
-import com.example.myapplication.wallet.Prueba
+import com.example.myapplication.wallet.TransactionListUI
 
 @Composable
 fun AppNavigation(){
@@ -14,10 +14,13 @@ fun AppNavigation(){
 
     NavHost(
         navController = navController,
-        startDestination = Screen.WalletScreen.route
+        startDestination = Screen.TransactionListScreen.route
     ){
-        composable(Screen.WalletScreen.route){
-            AddTransactionUI()
+        composable(Screen.AddTransactionScreen.route){
+            AddTransactionUI(navController)
+        }
+        composable(Screen.TransactionListScreen.route){
+            TransactionListUI(navController)
         }
     }
 }
