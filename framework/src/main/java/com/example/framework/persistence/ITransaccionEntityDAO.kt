@@ -11,7 +11,7 @@ interface ITransaccionEntityDAO {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(transaccionEntity: TransaccionEntity)
 
-    @Query("SELECT * FROM transacciones")
+    @Query("SELECT * FROM transacciones ORDER BY date ASC")
     fun getTransacciones(): List<TransaccionEntity>
 
     @Query("DELETE FROM transacciones WHERE name = :name AND price = :price AND description = :description AND date = :date")
