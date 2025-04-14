@@ -42,6 +42,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.myapplication.util.Util
 import java.time.Instant
 import java.time.ZoneId
 
@@ -177,6 +178,7 @@ fun AddTransactionUI(navController: NavController, viewModel: AddTransactionView
         Button(
             onClick = {
                 Toast.makeText(context, "Guardado", Toast.LENGTH_SHORT).show()
+                Util.sendNotificatión(context)
                 viewModel.saveTransaction(name, price, description, date, selectedType)
                 navController.popBackStack()
                 //Log.d("DEBUG", "Datos recibidos: name=$name, price=$price, description=$description, date=$date, type=$selectedType")
