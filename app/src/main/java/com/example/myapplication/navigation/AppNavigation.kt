@@ -14,7 +14,9 @@ fun AppNavigation(){
 
     NavHost(
         navController = navController,
-        startDestination = Screen.TransactionListScreen.route
+        startDestination = Screen.TransactionListScreen.route,
+
+
     ){
         composable(Screen.AddTransactionScreen.route){
             AddTransactionUI(navController)

@@ -2,6 +2,7 @@ package com.example.myapplication.wallet
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,12 +15,16 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -29,15 +34,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.domain.Transaccion
 import com.example.myapplication.navigation.Screen
 
 @Composable
-fun TransactionListUI(/*innerPadding: PaddingValues*/ navController: NavController) {
-    // Sample data - you'll connect this with your backend later
-    val transactions = remember { mutableStateListOf(
-        Transaction("Fulano", 0.0,"Chicharitos", "12/04/25")
-    ) }
+fun TransactionListUI(navController: NavController, transactionListViewModel: TransactionListViewModel = hiltViewModel()) {
+
+    LaunchedEffect(Unit) {
+        transactionListViewModel.loadTransacciones()
+    }
+
+    val uiState by transactionListViewModel.state.collectAsState()
 
     Scaffold(
         floatingActionButton = {
@@ -46,61 +55,87 @@ fun TransactionListUI(/*innerPadding: PaddingValues*/ navController: NavControll
     )
     {
         innerPadding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp)
-        ) {
-
-            item {
-                Row(
+        when (val ui = uiState) {
+            is TransactionListViewModel.TransactionUIState.Loading -> {
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = "Nombre",
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 14.sp
-                    )
-                    Text(
-                        text = "Precio",
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 14.sp
-                    )
-                    Text(
-                        text = "Descripcion",
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 14.sp
-                    )
-                    Text(
-                        text = "Fecha",
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 14.sp
-                    )
-                    // Space for delete icon
-                    Spacer(modifier = Modifier.width(24.dp))
+                    CircularProgressIndicator()
                 }
             }
+            is TransactionListViewModel.TransactionUIState.Loaded ->{
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                        .padding(16.dp)
+                ) {
 
-            items(transactions) { transaction ->
-                TransactionItem(
-                    transaction = transaction,
-                    onDelete = {
-                        transactions.remove(transaction)
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 8.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "Nombre",
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 14.sp
+                            )
+                            Text(
+                                text = "Precio",
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 14.sp
+                            )
+                            Text(
+                                text = "Descripcion",
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 14.sp
+                            )
+                            Text(
+                                text = "Fecha",
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 14.sp
+                            )
+                            // Space for delete icon
+                            Spacer(modifier = Modifier.width(24.dp))
+                        }
                     }
-                )
-            }
 
+                    items(ui.list) { transaccion ->
+                        TransactionItem(
+                            transaccion = transaccion,
+                            onDelete = {
+                                transactionListViewModel.deleteTransaction(transaccion)
+                            }
+                        )
+                    }
+
+                }
+            }
+            is TransactionListViewModel.TransactionUIState.Error -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(ui.message)
+                }
+            }
         }
+
+
     }
 }
 
 
 @Composable
-fun TransactionItem(transaction: Transaction, onDelete: () -> Unit) {
+fun TransactionItem(transaccion: Transaccion, onDelete: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -109,20 +144,20 @@ fun TransactionItem(transaction: Transaction, onDelete: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = transaction.name,
+            text = transaccion.nombre,
             fontSize = 14.sp
         )
         Text(
-            text = transaction.amount.toString(),
+            text = transaccion.precio.toString(),
             fontSize = 14.sp,
-            color = if (transaction.amount < 0) Color.Red else Color.Green
+            color = if (transaccion.precio < 0) Color.Red else Color.Green
         )
         Text(
-            text = transaction.description,
+            text = transaccion.descripcion,
             fontSize = 14.sp
         )
         Text(
-            text = transaction.date,
+            text = transaccion.fecha,
             fontSize = 14.sp
         )
         IconButton(
@@ -139,12 +174,6 @@ fun TransactionItem(transaction: Transaction, onDelete: () -> Unit) {
 }
 
 
-data class Transaction(
-    val name: String,
-    var amount: Double,
-    val description: String,
-    val date: String
-)
 
 @Composable
 fun FAB(navController: NavController) {

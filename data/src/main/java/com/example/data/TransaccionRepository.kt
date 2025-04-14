@@ -8,4 +8,13 @@ class TransaccionRepository(private val localDataSource: ITransaccionLocalDataSo
         this.localDataSource.saveTransaccion(transaccion)
         return true
     }
+
+    suspend fun getTransacciones():List<Transaccion>{
+        return this.localDataSource.getTransacciones()
+    }
+
+    suspend fun deleteTransaccion(transaccion: Transaccion): Boolean{
+        this.localDataSource.deleteTransaccion(transaccion)
+        return true
+    }
 }
