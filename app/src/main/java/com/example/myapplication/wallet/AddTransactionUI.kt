@@ -178,7 +178,7 @@ fun AddTransactionUI(navController: NavController, viewModel: AddTransactionView
         Button(
             onClick = {
                 Toast.makeText(context, "Guardado", Toast.LENGTH_SHORT).show()
-                Util.sendNotificatión(context)
+
                 viewModel.saveTransaction(name, price, description, date, selectedType)
                 navController.popBackStack()
                 //Log.d("DEBUG", "Datos recibidos: name=$name, price=$price, description=$description, date=$date, type=$selectedType")
@@ -224,21 +224,3 @@ fun AddTransactionUI(navController: NavController, viewModel: AddTransactionView
         }
     }
 }
-
-
-
-//
-//@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-//@Composable
-//fun MyWalletApp() {
-//    Scaffold(
-//        topBar = { ToolBar() },
-//        content = { innerPading -> Content(innerPadding = innerPading) },
-//        floatingActionButton = { FAB() },
-//        floatingActionButtonPosition = FabPosition.End
-//    )
-//
-//}
-
-
-

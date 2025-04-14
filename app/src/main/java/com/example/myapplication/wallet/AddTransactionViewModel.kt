@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.Transaccion
+import com.example.myapplication.util.Util
 import com.example.usecases.GetBalance
 import com.example.usecases.SaveTransaccion
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -65,6 +66,7 @@ class AddTransactionViewModel @Inject constructor(
             // Validar saldo para egresos
             if (!isIncome && balance!! < abs(amount)) {
                 _uiState.value = UiState.Notification("Saldo insuficiente")
+                Util.sendNotificatión(context)
                 return@launch
             }
 
@@ -81,11 +83,3 @@ class AddTransactionViewModel @Inject constructor(
     }
 
 }
-
-//data class RegistroEntity(
-//    val nombre: String,
-//    val precio: Double,
-//    val descripcion: String,
-//    val fecha: String) {
-//
-//}
