@@ -17,4 +17,6 @@ interface ITransaccionEntityDAO {
     @Query("DELETE FROM transacciones WHERE name = :name AND price = :price AND description = :description AND date = :date")
     suspend fun deleteByProperties(name: String, price: Double, description: String, date: String)
 
+    @Query("SELECT SUM(price) FROM transacciones")
+    suspend fun getBalance(): Double?
 }

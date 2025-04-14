@@ -5,6 +5,7 @@ import com.example.data.TransaccionRepository
 import com.example.data.transaccion.ITransaccionLocalDataSource
 import com.example.framework.transaccion.TransaccionLocalDataSource
 import com.example.usecases.DeleteTransaccion
+import com.example.usecases.GetBalance
 import com.example.usecases.GetTransacciones
 import com.example.usecases.SaveTransaccion
 import dagger.Module
@@ -34,6 +35,12 @@ object AppModule {
     @Singleton
     fun provideDeleteTransaccion(repository: TransaccionRepository): DeleteTransaccion {
         return DeleteTransaccion(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetBalance(repository: TransaccionRepository): GetBalance {
+        return GetBalance(repository)
     }
 
     @Provides

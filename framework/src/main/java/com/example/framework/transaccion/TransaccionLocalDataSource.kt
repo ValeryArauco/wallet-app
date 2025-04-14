@@ -24,4 +24,7 @@ class TransaccionLocalDataSource(val context: Context) : ITransaccionLocalDataSo
         return true
     }
 
+    override suspend fun getBalance(): Double? {
+        return transaccionEntityDAO.getBalance()
+    }
 }

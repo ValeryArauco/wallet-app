@@ -17,4 +17,8 @@ class TransaccionRepository(private val localDataSource: ITransaccionLocalDataSo
         this.localDataSource.deleteTransaccion(transaccion)
         return true
     }
+
+    suspend fun getBalance(): Double?{
+        return this.localDataSource.getBalance()
+    }
 }
